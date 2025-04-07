@@ -55,3 +55,35 @@ O site foi desenvolvido seguindo o princípio de Mobile First, garantindo uma ex
 - React Router
 - Styled Components
 - React Toastify
+
+## Deploy na Vercel
+
+Siga os passos abaixo para fazer o deploy do seu projeto na Vercel:
+
+1. **Crie uma conta na Vercel**
+   - Acesse [vercel.com](https://vercel.com)
+   - Faça login com GitHub, GitLab, ou crie uma conta com e-mail
+
+2. **Importe o projeto**
+   - Na dashboard da Vercel, clique em "Add New..." e depois "Project"
+   - Selecione seu repositório Git onde você fez upload do projeto
+   - Se não aparecer, clique em "Configure GitHub App" para dar acesso da Vercel ao repositório
+
+3. **Configure o projeto**
+   - **Framework Preset**: Selecione "Create React App"
+   - **Build and Output Settings**: Deixe as configurações padrão
+   - **Environment Variables**: Adicione caso necessário (não obrigatório para este projeto)
+
+4. **Deploy**
+   - Clique em "Deploy"
+   - A Vercel fará o build e deploy do projeto automaticamente
+
+5. **Acesse o site**
+   - Após finalizado o deploy, clique no link gerado para acessar seu site online
+   - Por padrão, será algo como: `seu-projeto.vercel.app`
+
+6. **Conecte seu domínio (opcional)**
+   - Na página do projeto na Vercel, vá para a aba "Settings" e depois "Domains"
+   - Adicione o domínio desejado e siga as instruções
+
+O deploy na Vercel é contínuo. Cada vez que você fizer um push para o repositório, uma nova versão será automaticamente implantada.
