@@ -70,8 +70,11 @@ Siga os passos abaixo para fazer o deploy do seu projeto na Vercel:
    - Se não aparecer, clique em "Configure GitHub App" para dar acesso da Vercel ao repositório
 
 3. **Configure o projeto**
-   - **Framework Preset**: Selecione "Create React App"
+   - **Framework Preset**: Selecione "Create React App" (IMPORTANTE: NÃO selecione "Next.js")
+   - Se a Vercel tentar detectar automaticamente como Next.js, mude manualmente para "Create React App"
    - **Build and Output Settings**: Deixe as configurações padrão
+     - Build Command: `npm run build` ou `yarn build`
+     - Output Directory: `build`
    - **Environment Variables**: Adicione caso necessário (não obrigatório para este projeto)
 
 4. **Deploy**

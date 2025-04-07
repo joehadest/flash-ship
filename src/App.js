@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Header from './Header';
 import Footer from './Footer';
 import ScrollToTop from './ScrollToTop';
+import ScrollToTopOnNavigate from './ScrollToTopOnNavigate'; // Novo componente importado
 
 // Páginas
 import Home from './Home';
@@ -18,10 +19,17 @@ import Checkout from './Checkout';
 import Contact from './Contact';
 import NotFound from './NotFound';
 
+// Novas páginas
+import FAQ from './FAQ';
+import Shipping from './Shipping';
+import Returns from './Returns';
+import Privacy from './Privacy';
+
 function App() {
     return (
         <div className="app">
             <ToastContainer />
+            <ScrollToTopOnNavigate /> {/* Adiciona o componente aqui */}
             <Header />
             <main className="main-content">
                 <Routes>
@@ -31,11 +39,18 @@ function App() {
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/contact" element={<Contact />} />
+
+                    {/* Novas rotas */}
+                    <Route path="/faq" element={<FAQ />} />
+                    <Route path="/shipping" element={<Shipping />} />
+                    <Route path="/returns" element={<Returns />} />
+                    <Route path="/privacy" element={<Privacy />} />
+
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </main>
             <Footer />
-            <ScrollToTop />
+            <ScrollToTop /> {/* Este é o botão de "voltar ao topo" que já existia */}
         </div>
     );
 }

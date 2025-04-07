@@ -196,7 +196,7 @@ const LoadingMessage = styled.div`
 const sampleProducts = [
     {
         id: 1,
-        title: 'Smartphone XYZ Pro Max',
+        title: 'Iphone XR',
         price: 1999.99,
         category: 'electronics',
         description: 'Smartphone com câmera de alta resolução, processador rápido e bateria de longa duração. Este modelo oferece a melhor experiência para usuários exigentes, com tela de alta definição, armazenamento amplo e desempenho excepcional para jogos e aplicativos.',
