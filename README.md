@@ -87,3 +87,54 @@ Siga os passos abaixo para fazer o deploy do seu projeto na Vercel:
    - Adicione o domínio desejado e siga as instruções
 
 O deploy na Vercel é contínuo. Cada vez que você fizer um push para o repositório, uma nova versão será automaticamente implantada.
+
+## Resolvendo Problemas de Deploy
+
+### Erro: "No GitHub account was found matching the commit author email address"
+
+Este erro ocorre quando o e-mail configurado no Git local não está associado à sua conta GitHub. Siga uma destas soluções:
+
+#### Solução 1: Adicionar o e-mail atual à sua conta GitHub
+
+1. Vá para [GitHub Settings > Emails](https://github.com/settings/emails)
+2. Adicione o e-mail que você usa nos commits como e-mail secundário
+3. Verifique o e-mail (clique no link de verificação enviado para seu e-mail)
+4. Faça um novo commit e push para testar
+
+#### Solução 2: Atualizar o e-mail no Git local para corresponder ao GitHub
+
+1. Configure seu e-mail do Git para corresponder ao principal do GitHub:
+   ```
+   git config --global user.email "seuemail@registradonogithub.com"
+   ```
+
+2. Verifique se foi configurado corretamente:
+   ```
+   git config --global user.email
+   ```
+
+3. Faça um novo commit e push:
+   ```
+   git commit --allow-empty -m "Atualizando configuração de e-mail"
+   git push
+   ```
+
+#### Solução 3: Configurar na Vercel
+
+1. Na dashboard da Vercel, acesse as configurações do projeto
+2. Vá para "Git Integration"
+3. Em algumas versões da interface, é possível ignorar verificações de autor ou adicionar e-mails alternativos
+
+Após realizar uma destas soluções, tente fazer o deploy novamente.
+
+## Recursos Futuros
+
+O Shippin está em constante evolução. Abaixo estão alguns dos recursos planejados para as próximas atualizações:
+
+- **Sistema de autenticação**: Login com e-mail ou redes sociais
+- **Painel de administração**: Gestão completa de produtos e pedidos
+- **Integração com APIs de pagamento**: Implementação de gateways como Stripe e PayPal
+- **Histórico de pedidos**: Rastreamento e visualização de compras anteriores
+- **Avaliações e comentários**: Sistema para usuários avaliarem produtos
+
+Sinta-se à vontade para contribuir com o projeto ou sugerir novos recursos!
