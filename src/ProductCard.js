@@ -2,8 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useCart } from './CartContext';
+import { motion } from 'framer-motion';
 
-const Card = styled.div`
+const Card = styled(motion.div)`
   background-color: #252525;
   border-radius: 8px;
   overflow: hidden;
@@ -12,14 +13,9 @@ const Card = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-  }
 `;
 
-const ProductImage = styled.img`
+const ProductImage = styled(motion.img)`
   width: 100%;
   height: 200px;
   object-fit: cover;
@@ -70,10 +66,10 @@ const ButtonsContainer = styled.div`
   margin-top: auto;
 `;
 
-const ViewButton = styled(Link)`
+const ViewButton = styled(motion(Link))`
   padding: 8px 12px;
-  background-color: #333333; // Alterado para cinza escuro
-  color: #f8f9fa; // Alterado para texto branco para melhor contraste
+  background-color: #333333;
+  color: #f8f9fa;
   border-radius: 4px;
   font-size: 0.9rem;
   font-weight: 500;
@@ -84,17 +80,13 @@ const ViewButton = styled(Link)`
   align-items: center;
   justify-content: center;
   
-  &:hover {
-    background-color: #444444; // Hover um pouco mais claro
-  }
-  
   @media (max-width: 600px) {
     font-size: 0.8rem;
     padding: 8px;
   }
 `;
 
-const AddButton = styled.button`
+const AddButton = styled(motion.button)`
   padding: 8px 12px;
   background-color: #e63946;
   color: white;
@@ -104,10 +96,8 @@ const AddButton = styled.button`
   text-align: center;
   flex: 1;
   min-height: 44px;
-  
-  &:hover {
-    background-color: #c1121f;
-  }
+  border: none;
+  cursor: pointer;
   
   @media (max-width: 600px) {
     font-size: 0.8rem;
@@ -123,14 +113,40 @@ const ProductCard = ({ product }) => {
     };
 
     return (
-        <Card>
-            <ProductImage src={product.image} alt={product.title} />
+        <Card
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            whileHover={{ 
+                y: -10,
+                boxShadow: "0 15px 30px rgba(0, 0, 0, 0.5)"
+            }}
+        >
+            <ProductImage 
+                src={product.image} 
+                alt={product.title} 
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+            />
             <CardContent>
                 <ProductTitle>{product.title}</ProductTitle>
                 <ProductPrice>R$ {product.price.toFixed(2)}</ProductPrice>
                 <ButtonsContainer>
-                    <ViewButton to={`/product/${product.id}`}>Detalhes</ViewButton>
-                    <AddButton onClick={handleAddToCart}>Comprar</AddButton>
+                    <ViewButton 
+                        to={`/product/${product.id}`}
+                        whileHover={{ scale: 1.05, backgroundColor: "#444" }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        Detalhes
+                    </ViewButton>
+                    <AddButton 
+                        onClick={handleAddToCart}
+                        whileHover={{ scale: 1.05, backgroundColor: "#c1121f" }}
+                        whileTap={{ scale: 0.95 }}
+                        initial={{ backgroundColor: "#e63946" }}
+                    >
+                        Comprar
+                    </AddButton>
                 </ButtonsContainer>
             </CardContent>
         </Card>

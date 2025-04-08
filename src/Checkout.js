@@ -1,483 +1,738 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from './CartContext';
+import { useAuth } from './AuthContext';
+import { toast } from 'react-toastify';
+import AnimatedPage from './components/AnimatedPage';
+import { motion } from 'framer-motion';
 
 const CheckoutContainer = styled.div`
   max-width: 1200px;
   margin: 40px auto;
-  padding: 0 15px;
+  padding: 0 20px;
+`;
+
+const CheckoutTitle = styled.h1`
+  font-size: 2.2rem;
+  margin-bottom: 30px;
+  color: #f8f9fa;
+`;
+
+const CheckoutLayout = styled.div`
   display: grid;
   grid-template-columns: 1fr 400px;
   gap: 30px;
-  width: 100%;
-  box-sizing: border-box;
-  overflow-x: hidden;
-  background-color: #1c1c1c;
-  color: #f8f9fa;
   
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
   }
-  
-  @media (max-width: 600px) {
-    margin: 20px auto;
-    padding: 0 10px;
-  }
 `;
 
-const CheckoutTitle = styled.h1`
-  font-size: 2rem;
-  margin-bottom: 30px;
-  grid-column: 1 / -1;
-  
-  @media (max-width: 600px) {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-  }
-`;
-
-const FormSection = styled.div`
-  margin-bottom: 30px;
+const CheckoutForm = styled.div`
   background-color: #252525;
-  padding: 20px;
   border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+`;
+
+const OrderSummary = styled.div`
+  background-color: #252525;
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  height: fit-content;
 `;
 
 const SectionTitle = styled.h2`
   font-size: 1.5rem;
   margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #e9ecef;
+  color: #f8f9fa;
+  position: relative;
+  
+  &:after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 3px;
+    background-color: #e63946;
+    margin-top: 8px;
+  }
 `;
 
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
+const FormSection = styled.div`
+  margin-bottom: 30px;
 `;
 
-const InputGroup = styled.div`
-  margin-bottom: 15px;
+const FormGroup = styled.div`
+  margin-bottom: 20px;
+`;
+
+const FormRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const Label = styled.label`
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
+  color: #f8f9fa;
 `;
 
 const Input = styled.input`
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
+  padding: 12px;
+  border: 1px solid #333;
   border-radius: 4px;
   font-size: 1rem;
-  box-sizing: border-box;
+  background-color: #333;
+  color: #f8f9fa;
   
   &:focus {
     outline: none;
-    border-color: #4361ee;
+    border-color: #e63946;
   }
 `;
 
 const Select = styled.select`
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
+  padding: 12px;
+  border: 1px solid #333;
   border-radius: 4px;
   font-size: 1rem;
-  background-color: white;
-  box-sizing: border-box;
+  background-color: #333;
+  color: #f8f9fa;
   
   &:focus {
     outline: none;
-    border-color: #4361ee;
+    border-color: #e63946;
   }
 `;
 
-const FieldRow = styled.div`
-  display: grid;
-  grid-template-columns: ${props => props.columns || '1fr 1fr'};
-  gap: 15px;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
+const AddressSelect = styled.div`
+  margin-bottom: 20px;
 `;
 
-const OrderSummary = styled.div`
-  background-color: #252525;
-  padding: 20px;
+const AddressOption = styled.div`
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  padding: 15px;
+  border: 1px solid ${props => props.selected ? '#e63946' : '#333'};
   border-radius: 8px;
-  height: fit-content;
-  position: sticky;
-  top: 80px;
+  background-color: ${props => props.selected ? '#2a2a2a' : '#252525'};
+  cursor: pointer;
   
-  @media (max-width: 900px) {
-    position: static;
-    margin-top: 20px;
+  &:hover {
+    border-color: #e63946;
   }
+`;
+
+const AddressRadio = styled.input`
+  margin-right: 12px;
+  margin-top: 3px;
+`;
+
+const AddressDetails = styled.div`
+  flex: 1;
+`;
+
+const AddressName = styled.div`
+  font-weight: 500;
+  color: #f8f9fa;
+  margin-bottom: 5px;
+`;
+
+const AddressText = styled.div`
+  color: #adb5bd;
 `;
 
 const SummaryItem = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  gap: 15px;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #333;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const ItemImage = styled.img`
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+`;
+
+const ItemInfo = styled.div``;
+
+const ItemName = styled.div`
+  font-weight: 500;
+  color: #f8f9fa;
+  margin-bottom: 5px;
+`;
+
+const ItemPrice = styled.div`
+  color: #adb5bd;
   font-size: 0.9rem;
 `;
 
-const SummaryItemTitle = styled.span`
-  color: #6c757d;
+const ItemQuantity = styled.div`
+  color: #e63946;
+  font-weight: 500;
+  text-align: right;
 `;
 
-const Divider = styled.hr`
-  border: none;
-  border-top: 1px solid #ddd;
-  margin: 15px 0;
-`;
-
-const TotalRow = styled.div`
+const SummaryRow = styled.div`
   display: flex;
   justify-content: space-between;
-  font-weight: 700;
-  font-size: 1.1rem;
-  margin-top: 5px;
+  padding: 15px 0;
+  color: #adb5bd;
+  font-size: 1rem;
+  border-top: ${props => props.border ? '1px solid #333' : 'none'};
+  
+  &:last-child {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #f8f9fa;
+  }
 `;
 
-const PlaceOrderButton = styled.button`
+const ButtonContainer = styled.div`
+  margin-top: 30px;
+`;
+
+const SubmitButton = styled(motion.button)`
   width: 100%;
-  padding: 15px;
-  background-color: #4361ee;
+  padding: 14px;
+  background-color: #e63946;
   color: white;
   border: none;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 500;
   cursor: pointer;
-  margin-top: 20px;
+  transition: background-color 0.3s ease;
   
   &:hover {
-    background-color: #3a56d4;
+    background-color: #c1121f;
   }
   
   &:disabled {
-    background-color: #6c757d;
+    background-color: #555;
     cursor: not-allowed;
   }
 `;
 
-const PaymentOptions = styled.div`
-  margin-bottom: 20px;
-`;
-
 const PaymentOption = styled.div`
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  padding: 15px;
+  border: 1px solid ${props => props.selected ? '#e63946' : '#333'};
+  border-radius: 8px;
+  background-color: ${props => props.selected ? '#2a2a2a' : '#252525'};
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  
+  &:hover {
+    border-color: #e63946;
+  }
 `;
 
-const Radio = styled.input`
+const PaymentRadio = styled.input`
+  margin-right: 12px;
+`;
+
+const PaymentLabel = styled.label`
+  font-weight: 500;
+  color: #f8f9fa;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  width: 100%;
+`;
+
+const PaymentIcon = styled.span`
+  font-size: 1.2rem;
   margin-right: 10px;
 `;
 
+const CardFields = styled.div`
+  margin-top: 20px;
+  display: ${props => props.show ? 'block' : 'none'};
+`;
+
 const Checkout = () => {
-    const navigate = useNavigate();
-    const { cart, totalPrice, clearCart } = useCart();
-
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        address: '',
-        city: '',
-        state: '',
-        zipCode: '',
-        country: 'Brasil',
-        paymentMethod: 'creditCard'
-    });
-
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    // Calcula os valores do pedido
-    const subtotal = totalPrice;
-    const shipping = subtotal > 0 ? 15.99 : 0;
-    const total = subtotal + shipping;
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-
-        // Simulação de processamento de pagamento
-        setTimeout(() => {
-            clearCart();
-            navigate('/order-success');
-        }, 2000);
-    };
-
-    if (cart.length === 0) {
-        return (
-            <div style={{ textAlign: 'center', padding: '50px 20px' }}>
-                <h2>Seu carrinho está vazio</h2>
-                <p style={{ margin: '20px 0' }}>Adicione produtos ao seu carrinho antes de finalizar a compra.</p>
-                <Link to="/products" style={{
-                    display: 'inline-block',
-                    padding: '10px 20px',
-                    backgroundColor: '#4361ee',
-                    color: 'white',
-                    borderRadius: '4px',
-                    textDecoration: 'none'
-                }}>
-                    Ver Produtos
-                </Link>
-            </div>
-        );
+  const { cartItems = [], getSubtotal, calculateShipping, clearCart } = useCart();
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
+  
+  const [formData, setFormData] = useState({
+    fullName: currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : '',
+    email: currentUser ? currentUser.email : '',
+    phone: currentUser ? currentUser.phone : '',
+    shippingMethod: 'standard',
+    paymentMethod: 'creditCard',
+    cardNumber: '',
+    cardName: '',
+    cardExpiry: '',
+    cardCvv: '',
+    addressId: ''
+  });
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [step, setStep] = useState(1);
+  
+  // Redirecionar se o carrinho estiver vazio
+  useEffect(() => {
+    if (!cartItems || cartItems.length === 0) {
+      toast.error('Seu carrinho está vazio.');
+      navigate('/cart');
+    } else if (step === 1 && currentUser && currentUser.addresses && currentUser.addresses.length > 0) {
+      setFormData(prev => ({
+        ...prev,
+        addressId: currentUser.addresses.find(addr => addr.isDefault)?.id || currentUser.addresses[0].id
+      }));
     }
-
-    return (
-        <CheckoutContainer>
-            <CheckoutTitle>Finalizar Compra</CheckoutTitle>
-
+  }, [cartItems, navigate, currentUser, step]);
+  
+  const subtotal = getSubtotal ? getSubtotal() : 0;
+  const shipping = calculateShipping ? calculateShipping() : 0;
+  const total = subtotal + shipping;
+  
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+  
+  const handleAddressSelect = (addressId) => {
+    setFormData(prev => ({
+      ...prev,
+      addressId
+    }));
+  };
+  
+  const handlePaymentSelect = (method) => {
+    setFormData(prev => ({
+      ...prev,
+      paymentMethod: method
+    }));
+  };
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulando processamento do pedido
+    setTimeout(() => {
+      clearCart();
+      toast.success('Pedido realizado com sucesso!');
+      navigate('/');
+    }, 2000);
+  };
+  
+  // Certificamos que cartItems existe e tem a propriedade length
+  const itemsCount = cartItems && Array.isArray(cartItems) ? cartItems.length : 0;
+  
+  return (
+    <AnimatedPage>
+      <CheckoutContainer>
+        <CheckoutTitle>Finalizar Compra</CheckoutTitle>
+        
+        <CheckoutLayout>
+          <CheckoutForm>
+            <FormSection>
+              <SectionTitle>Informações de Contato</SectionTitle>
+              
+              <FormGroup>
+                <Label htmlFor="fullName">Nome Completo</Label>
+                <Input
+                  type="text"
+                  id="fullName"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  required
+                />
+              </FormGroup>
+              
+              <FormRow>
+                <FormGroup>
+                  <Label htmlFor="email">E-mail</Label>
+                  <Input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </FormGroup>
+                
+                <FormGroup>
+                  <Label htmlFor="phone">Telefone</Label>
+                  <Input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    required
+                  />
+                </FormGroup>
+              </FormRow>
+            </FormSection>
+            
+            <FormSection>
+              <SectionTitle>Endereço de Entrega</SectionTitle>
+              
+              {currentUser && currentUser.addresses && currentUser.addresses.length > 0 ? (
+                <AddressSelect>
+                  {currentUser.addresses.map(address => (
+                    <AddressOption
+                      key={address.id}
+                      selected={formData.addressId === address.id}
+                      onClick={() => handleAddressSelect(address.id)}
+                    >
+                      <AddressRadio
+                        type="radio"
+                        checked={formData.addressId === address.id}
+                        onChange={() => handleAddressSelect(address.id)}
+                      />
+                      <AddressDetails>
+                        <AddressName>{address.addressName}</AddressName>
+                        <AddressText>
+                          {address.street}, {address.number}
+                          {address.complement && `, ${address.complement}`}
+                          <br />
+                          {address.neighborhood}, {address.city} - {address.state}
+                          <br />
+                          CEP: {address.zipCode}
+                        </AddressText>
+                      </AddressDetails>
+                    </AddressOption>
+                  ))}
+                </AddressSelect>
+              ) : (
+                <>
+                  <FormGroup>
+                    <Label htmlFor="street">Endereço</Label>
+                    <Input
+                      type="text"
+                      id="street"
+                      name="street"
+                      onChange={handleChange}
+                      required
+                    />
+                  </FormGroup>
+                  
+                  <FormRow>
+                    <FormGroup>
+                      <Label htmlFor="number">Número</Label>
+                      <Input
+                        type="text"
+                        id="number"
+                        name="number"
+                        onChange={handleChange}
+                        required
+                      />
+                    </FormGroup>
+                    
+                    <FormGroup>
+                      <Label htmlFor="complement">Complemento</Label>
+                      <Input
+                        type="text"
+                        id="complement"
+                        name="complement"
+                        onChange={handleChange}
+                      />
+                    </FormGroup>
+                  </FormRow>
+                  
+                  <FormRow>
+                    <FormGroup>
+                      <Label htmlFor="city">Cidade</Label>
+                      <Input
+                        type="text"
+                        id="city"
+                        name="city"
+                        onChange={handleChange}
+                        required
+                      />
+                    </FormGroup>
+                    
+                    <FormGroup>
+                      <Label htmlFor="state">Estado</Label>
+                      <Select
+                        id="state"
+                        name="state"
+                        onChange={handleChange}
+                        required
+                      >
+                        <option value="">Selecione...</option>
+                        <option value="AC">Acre</option>
+                        <option value="AL">Alagoas</option>
+                        <option value="AP">Amapá</option>
+                        <option value="AM">Amazonas</option>
+                        <option value="BA">Bahia</option>
+                        <option value="CE">Ceará</option>
+                        <option value="DF">Distrito Federal</option>
+                        <option value="ES">Espírito Santo</option>
+                        <option value="GO">Goiás</option>
+                        <option value="MA">Maranhão</option>
+                        <option value="MT">Mato Grosso</option>
+                        <option value="MS">Mato Grosso do Sul</option>
+                        <option value="MG">Minas Gerais</option>
+                        <option value="PA">Pará</option>
+                        <option value="PB">Paraíba</option>
+                        <option value="PR">Paraná</option>
+                        <option value="PE">Pernambuco</option>
+                        <option value="PI">Piauí</option>
+                        <option value="RJ">Rio de Janeiro</option>
+                        <option value="RN">Rio Grande do Norte</option>
+                        <option value="RS">Rio Grande do Sul</option>
+                        <option value="RO">Rondônia</option>
+                        <option value="RR">Roraima</option>
+                        <option value="SC">Santa Catarina</option>
+                        <option value="SP">São Paulo</option>
+                        <option value="SE">Sergipe</option>
+                        <option value="TO">Tocantins</option>
+                      </Select>
+                    </FormGroup>
+                  </FormRow>
+                  
+                  <FormGroup>
+                    <Label htmlFor="zipCode">CEP</Label>
+                    <Input
+                      type="text"
+                      id="zipCode"
+                      name="zipCode"
+                      onChange={handleChange}
+                      required
+                    />
+                  </FormGroup>
+                </>
+              )}
+            </FormSection>
+            
+            <FormSection>
+              <SectionTitle>Método de Envio</SectionTitle>
+              
+              <PaymentOption
+                selected={formData.shippingMethod === 'standard'}
+                onClick={() => handleChange({ target: { name: 'shippingMethod', value: 'standard' } })}
+              >
+                <PaymentRadio
+                  type="radio"
+                  name="shippingMethod"
+                  value="standard"
+                  checked={formData.shippingMethod === 'standard'}
+                  onChange={handleChange}
+                />
+                <PaymentLabel htmlFor="standard">
+                  <PaymentIcon>📦</PaymentIcon>
+                  Envio Padrão (3-7 dias úteis)
+                  {shipping === 0 ? ' - Grátis' : ` - R$ ${shipping.toFixed(2)}`}
+                </PaymentLabel>
+              </PaymentOption>
+              
+              <PaymentOption
+                selected={formData.shippingMethod === 'express'}
+                onClick={() => handleChange({ target: { name: 'shippingMethod', value: 'express' } })}
+              >
+                <PaymentRadio
+                  type="radio"
+                  name="shippingMethod"
+                  value="express"
+                  checked={formData.shippingMethod === 'express'}
+                  onChange={handleChange}
+                />
+                <PaymentLabel htmlFor="express">
+                  <PaymentIcon>🚚</PaymentIcon>
+                  Envio Expresso (1-2 dias úteis) - R$ {(shipping + 15).toFixed(2)}
+                </PaymentLabel>
+              </PaymentOption>
+            </FormSection>
+            
+            <FormSection>
+              <SectionTitle>Método de Pagamento</SectionTitle>
+              
+              <PaymentOption
+                selected={formData.paymentMethod === 'creditCard'}
+                onClick={() => handlePaymentSelect('creditCard')}
+              >
+                <PaymentRadio
+                  type="radio"
+                  name="paymentMethod"
+                  value="creditCard"
+                  checked={formData.paymentMethod === 'creditCard'}
+                  onChange={() => handlePaymentSelect('creditCard')}
+                />
+                <PaymentLabel htmlFor="creditCard">
+                  <PaymentIcon>💳</PaymentIcon>
+                  Cartão de Crédito
+                </PaymentLabel>
+              </PaymentOption>
+              
+              <PaymentOption
+                selected={formData.paymentMethod === 'pix'}
+                onClick={() => handlePaymentSelect('pix')}
+              >
+                <PaymentRadio
+                  type="radio"
+                  name="paymentMethod"
+                  value="pix"
+                  checked={formData.paymentMethod === 'pix'}
+                  onChange={() => handlePaymentSelect('pix')}
+                />
+                <PaymentLabel htmlFor="pix">
+                  <PaymentIcon>💸</PaymentIcon>
+                  Pix
+                </PaymentLabel>
+              </PaymentOption>
+              
+              <PaymentOption
+                selected={formData.paymentMethod === 'boleto'}
+                onClick={() => handlePaymentSelect('boleto')}
+              >
+                <PaymentRadio
+                  type="radio"
+                  name="paymentMethod"
+                  value="boleto"
+                  checked={formData.paymentMethod === 'boleto'}
+                  onChange={() => handlePaymentSelect('boleto')}
+                />
+                <PaymentLabel htmlFor="boleto">
+                  <PaymentIcon>🧾</PaymentIcon>
+                  Boleto Bancário
+                </PaymentLabel>
+              </PaymentOption>
+              
+              <CardFields show={formData.paymentMethod === 'creditCard'}>
+                <FormGroup>
+                  <Label htmlFor="cardNumber">Número do Cartão</Label>
+                  <Input
+                    type="text"
+                    id="cardNumber"
+                    name="cardNumber"
+                    value={formData.cardNumber}
+                    onChange={handleChange}
+                    placeholder="0000 0000 0000 0000"
+                  />
+                </FormGroup>
+                
+                <FormGroup>
+                  <Label htmlFor="cardName">Nome no Cartão</Label>
+                  <Input
+                    type="text"
+                    id="cardName"
+                    name="cardName"
+                    value={formData.cardName}
+                    onChange={handleChange}
+                  />
+                </FormGroup>
+                
+                <FormRow>
+                  <FormGroup>
+                    <Label htmlFor="cardExpiry">Data de Validade</Label>
+                    <Input
+                      type="text"
+                      id="cardExpiry"
+                      name="cardExpiry"
+                      value={formData.cardExpiry}
+                      onChange={handleChange}
+                      placeholder="MM/AA"
+                    />
+                  </FormGroup>
+                  
+                  <FormGroup>
+                    <Label htmlFor="cardCvv">CVV</Label>
+                    <Input
+                      type="text"
+                      id="cardCvv"
+                      name="cardCvv"
+                      value={formData.cardCvv}
+                      onChange={handleChange}
+                      placeholder="123"
+                    />
+                  </FormGroup>
+                </FormRow>
+              </CardFields>
+            </FormSection>
+            
+            <ButtonContainer>
+              <SubmitButton
+                type="submit"
+                disabled={isSubmitting}
+                onClick={handleSubmit}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {isSubmitting ? 'Processando...' : 'Finalizar Pedido'}
+              </SubmitButton>
+            </ButtonContainer>
+          </CheckoutForm>
+          
+          <OrderSummary>
+            <SectionTitle>Resumo do Pedido</SectionTitle>
+            
             <div>
-                <Form onSubmit={handleSubmit}>
-                    <FormSection>
-                        <SectionTitle>Dados Pessoais</SectionTitle>
-                        <FieldRow>
-                            <InputGroup>
-                                <Label htmlFor="firstName">Nome</Label>
-                                <Input
-                                    type="text"
-                                    id="firstName"
-                                    name="firstName"
-                                    value={formData.firstName}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </InputGroup>
-
-                            <InputGroup>
-                                <Label htmlFor="lastName">Sobrenome</Label>
-                                <Input
-                                    type="text"
-                                    id="lastName"
-                                    name="lastName"
-                                    value={formData.lastName}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </InputGroup>
-                        </FieldRow>
-
-                        <InputGroup>
-                            <Label htmlFor="email">E-mail</Label>
-                            <Input
-                                type="email"
-                                id="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                required
-                            />
-                        </InputGroup>
-                    </FormSection>
-
-                    <FormSection>
-                        <SectionTitle>Endereço de Entrega</SectionTitle>
-                        <InputGroup>
-                            <Label htmlFor="address">Endereço</Label>
-                            <Input
-                                type="text"
-                                id="address"
-                                name="address"
-                                value={formData.address}
-                                onChange={handleChange}
-                                required
-                            />
-                        </InputGroup>
-
-                        <FieldRow>
-                            <InputGroup>
-                                <Label htmlFor="city">Cidade</Label>
-                                <Input
-                                    type="text"
-                                    id="city"
-                                    name="city"
-                                    value={formData.city}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </InputGroup>
-
-                            <InputGroup>
-                                <Label htmlFor="state">Estado</Label>
-                                <Input
-                                    type="text"
-                                    id="state"
-                                    name="state"
-                                    value={formData.state}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </InputGroup>
-
-                            <InputGroup>
-                                <Label htmlFor="zipCode">CEP</Label>
-                                <Input
-                                    type="text"
-                                    id="zipCode"
-                                    name="zipCode"
-                                    value={formData.zipCode}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </InputGroup>
-                        </FieldRow>
-
-                        <InputGroup>
-                            <Label htmlFor="country">País</Label>
-                            <Select
-                                id="country"
-                                name="country"
-                                value={formData.country}
-                                onChange={handleChange}
-                            >
-                                <option value="Brasil">Brasil</option>
-                                <option value="Portugal">Portugal</option>
-                            </Select>
-                        </InputGroup>
-                    </FormSection>
-
-                    <FormSection>
-                        <SectionTitle>Forma de Pagamento</SectionTitle>
-                        <PaymentOptions>
-                            <PaymentOption>
-                                <Radio
-                                    type="radio"
-                                    id="creditCard"
-                                    name="paymentMethod"
-                                    value="creditCard"
-                                    checked={formData.paymentMethod === 'creditCard'}
-                                    onChange={handleChange}
-                                />
-                                <Label htmlFor="creditCard" style={{ display: 'inline' }}>Cartão de Crédito</Label>
-                            </PaymentOption>
-
-                            <PaymentOption>
-                                <Radio
-                                    type="radio"
-                                    id="pix"
-                                    name="paymentMethod"
-                                    value="pix"
-                                    checked={formData.paymentMethod === 'pix'}
-                                    onChange={handleChange}
-                                />
-                                <Label htmlFor="pix" style={{ display: 'inline' }}>Pix</Label>
-                            </PaymentOption>
-
-                            <PaymentOption>
-                                <Radio
-                                    type="radio"
-                                    id="boleto"
-                                    name="paymentMethod"
-                                    value="boleto"
-                                    checked={formData.paymentMethod === 'boleto'}
-                                    onChange={handleChange}
-                                />
-                                <Label htmlFor="boleto" style={{ display: 'inline' }}>Boleto Bancário</Label>
-                            </PaymentOption>
-                        </PaymentOptions>
-
-                        {formData.paymentMethod === 'creditCard' && (
-                            <>
-                                <FieldRow>
-                                    <InputGroup>
-                                        <Label htmlFor="cardNumber">Número do Cartão</Label>
-                                        <Input
-                                            type="text"
-                                            id="cardNumber"
-                                            placeholder="1234 5678 9012 3456"
-                                            required
-                                        />
-                                    </InputGroup>
-
-                                    <InputGroup>
-                                        <Label htmlFor="cardName">Nome no Cartão</Label>
-                                        <Input
-                                            type="text"
-                                            id="cardName"
-                                            placeholder="Nome completo"
-                                            required
-                                        />
-                                    </InputGroup>
-                                </FieldRow>
-
-                                <FieldRow columns="1fr 1fr">
-                                    <InputGroup>
-                                        <Label htmlFor="expiry">Data de Validade</Label>
-                                        <Input
-                                            type="text"
-                                            id="expiry"
-                                            placeholder="MM/AA"
-                                            required
-                                        />
-                                    </InputGroup>
-
-                                    <InputGroup>
-                                        <Label htmlFor="cvv">CVV</Label>
-                                        <Input
-                                            type="text"
-                                            id="cvv"
-                                            placeholder="123"
-                                            required
-                                        />
-                                    </InputGroup>
-                                </FieldRow>
-                            </>
-                        )}
-                    </FormSection>
-
-                    <PlaceOrderButton type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? 'Processando...' : 'Finalizar pedido'}
-                    </PlaceOrderButton>
-                </Form>
+              {/* Verificamos se cartItems existe antes de usar map */}
+              {cartItems && cartItems.map && cartItems.map(item => (
+                <SummaryItem key={item.id}>
+                  <ItemImage src={item.image} alt={item.title} />
+                  <ItemInfo>
+                    <ItemName>{item.title}</ItemName>
+                    <ItemPrice>R$ {item.price.toFixed(2)}</ItemPrice>
+                  </ItemInfo>
+                  <ItemQuantity>{item.quantity}x</ItemQuantity>
+                </SummaryItem>
+              ))}
             </div>
-
-            <OrderSummary>
-                <SectionTitle>Resumo do Pedido</SectionTitle>
-
-                {cart.map(item => (
-                    <SummaryItem key={item.id}>
-                        <SummaryItemTitle>{item.quantity}x {item.title}</SummaryItemTitle>
-                        <span>R$ {(item.price * item.quantity).toFixed(2)}</span>
-                    </SummaryItem>
-                ))}
-
-                <Divider />
-
-                <SummaryItem>
-                    <SummaryItemTitle>Subtotal</SummaryItemTitle>
-                    <span>R$ {subtotal.toFixed(2)}</span>
-                </SummaryItem>
-
-                <SummaryItem>
-                    <SummaryItemTitle>Frete</SummaryItemTitle>
-                    <span>R$ {shipping.toFixed(2)}</span>
-                </SummaryItem>
-
-                <Divider />
-
-                <TotalRow>
-                    <span>Total</span>
-                    <span>R$ {total.toFixed(2)}</span>
-                </TotalRow>
-            </OrderSummary>
-        </CheckoutContainer>
-    );
+            
+            <SummaryRow border>
+              <div>Subtotal</div>
+              <div>R$ {subtotal.toFixed(2)}</div>
+            </SummaryRow>
+            
+            <SummaryRow>
+              <div>Frete</div>
+              <div>
+                {shipping === 0
+                  ? 'Grátis'
+                  : `R$ ${formData.shippingMethod === 'express' 
+                      ? (shipping + 15).toFixed(2) 
+                      : shipping.toFixed(2)}`
+                }
+              </div>
+            </SummaryRow>
+            
+            <SummaryRow>
+              <div>Total</div>
+              <div>
+                R$ {formData.shippingMethod === 'express' 
+                    ? (total + 15).toFixed(2) 
+                    : total.toFixed(2)
+                }
+              </div>
+            </SummaryRow>
+          </OrderSummary>
+        </CheckoutLayout>
+      </CheckoutContainer>
+    </AnimatedPage>
+  );
 };
 
 export default Checkout;

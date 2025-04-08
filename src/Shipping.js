@@ -1,141 +1,210 @@
 import React from 'react';
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 
 const ShippingContainer = styled.div`
-  max-width: 1000px;
+  max-width: 900px;
   margin: 40px auto;
   padding: 0 20px;
-  color: #f8f9fa;
-  background-color: #1c1c1c;
 `;
 
-const PageTitle = styled.h1`
-  font-size: 2.5rem;
+const ShippingHeader = styled.div`
+  margin-bottom: 40px;
   text-align: center;
+`;
+
+const ShippingTitle = styled.h1`
+  font-size: 2.2rem;
+  color: #f8f9fa;
+  margin-bottom: 15px;
+`;
+
+const ShippingDescription = styled.p`
+  color: #adb5bd;
+  font-size: 1.1rem;
+`;
+
+const InfoSection = styled(motion.div)`
+  background-color: #252525;
+  border-radius: 8px;
+  padding: 25px;
   margin-bottom: 30px;
 `;
 
-const Section = styled.section`
-  margin-bottom: 40px;
-`;
-
 const SectionTitle = styled.h2`
-  font-size: 1.8rem;
+  font-size: 1.5rem;
+  color: #f8f9fa;
   margin-bottom: 15px;
-  color: #e63946;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #333;
-`;
-
-const Paragraph = styled.p`
-  margin-bottom: 15px;
-  line-height: 1.6;
-  color: #adb5bd;
-`;
-
-const ListContainer = styled.ul`
-  margin: 20px 0;
-  padding-left: 20px;
-`;
-
-const ListItem = styled.li`
-  margin-bottom: 10px;
-  line-height: 1.5;
-  color: #adb5bd;
-`;
-
-const InfoTable = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
-`;
-
-const TableRow = styled.tr`
-  &:nth-child(odd) {
-    background-color: #252525;
+  position: relative;
+  
+  &:after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 3px;
+    background-color: #e63946;
+    margin-top: 8px;
   }
 `;
 
-const TableHeader = styled.th`
-  text-align: left;
-  padding: 12px 15px;
-  background-color: #333;
-  color: #f8f9fa;
+const SectionContent = styled.div`
+  color: #adb5bd;
+  line-height: 1.6;
+  
+  p {
+    margin-bottom: 15px;
+  }
+  
+  ul {
+    margin-left: 20px;
+    margin-bottom: 15px;
+    
+    li {
+      margin-bottom: 8px;
+    }
+  }
 `;
 
-const TableCell = styled.td`
-  padding: 12px 15px;
-  border-bottom: 1px solid #333;
+const TableContainer = styled.div`
+  overflow-x: auto;
+  margin: 20px 0;
+`;
+
+const ShippingTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #333;
+  }
+  
+  th {
+    background-color: #333;
+    color: #f8f9fa;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #2c2c2c;
+  }
+  
+  tr:hover {
+    background-color: #303030;
+  }
 `;
 
 const Shipping = () => {
-    return (
-        <ShippingContainer>
-            <PageTitle>Política de Envio</PageTitle>
-
-            <Section>
-                <SectionTitle>Prazos de Entrega</SectionTitle>
-                <Paragraph>
-                    Na Shippin, trabalhamos com parceiros logísticos confiáveis para garantir que seu pedido chegue em segurança e dentro do prazo estimado. Os prazos variam de acordo com a região de entrega.
-                </Paragraph>
-
-                <InfoTable>
-                    <thead>
-                        <TableRow>
-                            <TableHeader>Região</TableHeader>
-                            <TableHeader>Prazo Estimado</TableHeader>
-                        </TableRow>
-                    </thead>
-                    <tbody>
-                        <TableRow>
-                            <TableCell>Capitais e regiões metropolitanas</TableCell>
-                            <TableCell>7 a 10 dias úteis</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>Outras cidades</TableCell>
-                            <TableCell>10 a 15 dias úteis</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>Regiões remotas</TableCell>
-                            <TableCell>15 a 21 dias úteis</TableCell>
-                        </TableRow>
-                    </tbody>
-                </InfoTable>
-
-                <Paragraph>
-                    <strong>Importante:</strong> O prazo começa a ser contado após a confirmação de pagamento e pode variar em períodos de alta demanda.
-                </Paragraph>
-            </Section>
-
-            <Section>
-                <SectionTitle>Custos de Envio</SectionTitle>
-                <Paragraph>
-                    Os custos de envio são calculados com base no peso, dimensões do pacote e distância até o endereço de entrega.
-                </Paragraph>
-                <ListContainer>
-                    <ListItem>Frete grátis para compras acima de R$ 300,00 para todo o Brasil.</ListItem>
-                    <ListItem>Para compras abaixo desse valor, o frete será calculado no checkout.</ListItem>
-                    <ListItem>Oferecemos opção de frete expresso com custo adicional para entregas mais rápidas.</ListItem>
-                </ListContainer>
-            </Section>
-
-            <Section>
-                <SectionTitle>Rastreamento de Pedidos</SectionTitle>
-                <Paragraph>
-                    Após o envio, você receberá um e-mail com o código de rastreamento e instruções para acompanhar seu pedido.
-                    O status da entrega também pode ser verificado na área "Meus Pedidos" após fazer login em sua conta.
-                </Paragraph>
-            </Section>
-
-            <Section>
-                <SectionTitle>Problemas na Entrega</SectionTitle>
-                <Paragraph>
-                    Se seu pedido não for entregue dentro do prazo previsto ou se houver qualquer problema durante o processo de entrega,
-                    entre em contato com nosso suporte em até 48 horas para que possamos resolver a situação da melhor forma possível.
-                </Paragraph>
-            </Section>
-        </ShippingContainer>
-    );
+  return (
+    <ShippingContainer>
+      <ShippingHeader>
+        <ShippingTitle>Política de Envio</ShippingTitle>
+        <ShippingDescription>
+          Saiba como funcionam nossos processos de entrega e envio
+        </ShippingDescription>
+      </ShippingHeader>
+      
+      <InfoSection
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+      >
+        <SectionTitle>Prazos de Envio</SectionTitle>
+        <SectionContent>
+          <p>
+            Nós nos esforçamos para processar e enviar seu pedido o mais rápido possível.
+            Geralmente, os pedidos são processados em até 24 horas (dias úteis) após a confirmação do pagamento.
+          </p>
+          
+          <TableContainer>
+            <ShippingTable>
+              <thead>
+                <tr>
+                  <th>Região</th>
+                  <th>Prazo Estimado</th>
+                  <th>Frete</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Capitais</td>
+                  <td>1-3 dias úteis</td>
+                  <td>A partir de R$ 15,90</td>
+                </tr>
+                <tr>
+                  <td>Região Sudeste</td>
+                  <td>2-4 dias úteis</td>
+                  <td>A partir de R$ 18,90</td>
+                </tr>
+                <tr>
+                  <td>Sul e Nordeste</td>
+                  <td>3-5 dias úteis</td>
+                  <td>A partir de R$ 22,90</td>
+                </tr>
+                <tr>
+                  <td>Centro-Oeste</td>
+                  <td>3-6 dias úteis</td>
+                  <td>A partir de R$ 25,90</td>
+                </tr>
+                <tr>
+                  <td>Norte</td>
+                  <td>5-8 dias úteis</td>
+                  <td>A partir de R$ 29,90</td>
+                </tr>
+              </tbody>
+            </ShippingTable>
+          </TableContainer>
+          
+          <p>
+            <strong>Importante:</strong> Os prazos mencionados são estimados e podem variar de acordo com a
+            disponibilidade do produto, condições climáticas ou outros fatores externos.
+          </p>
+        </SectionContent>
+      </InfoSection>
+      
+      <InfoSection
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <SectionTitle>Opções de Envio</SectionTitle>
+        <SectionContent>
+          <p>Oferecemos diversas opções de envio para atender às suas necessidades:</p>
+          
+          <ul>
+            <li><strong>Envio Padrão:</strong> Nossa opção mais econômica, com entrega em até 8 dias úteis.</li>
+            <li><strong>Envio Expresso:</strong> Entrega mais rápida, com prazo de 1-3 dias úteis (disponível apenas para capitais e regiões metropolitanas).</li>
+            <li><strong>Retirada na Loja:</strong> Retire seu pedido em uma de nossas lojas físicas sem custo de frete.</li>
+          </ul>
+          
+          <p>
+            O valor do frete é calculado com base no CEP de entrega, peso e dimensões dos produtos.
+            Você poderá visualizar as opções disponíveis e os valores durante o processo de checkout.
+          </p>
+        </SectionContent>
+      </InfoSection>
+      
+      <InfoSection
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+      >
+        <SectionTitle>Rastreamento de Pedidos</SectionTitle>
+        <SectionContent>
+          <p>
+            Após o envio do seu pedido, você receberá um e-mail com o código de rastreamento.
+            Você também pode acompanhar o status do seu pedido a qualquer momento acessando
+            sua conta na seção "Meus Pedidos".
+          </p>
+          
+          <p>
+            Utilizamos os serviços dos Correios e transportadoras parceiras de confiança para
+            garantir que seu pedido chegue em perfeitas condições.
+          </p>
+        </SectionContent>
+      </InfoSection>
+    </ShippingContainer>
+  );
 };
 
 export default Shipping;

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useCart } from './CartContext';
+import { useAuth } from './AuthContext';
 import styled from 'styled-components';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const HeaderContainer = styled.header`
+const HeaderContainer = styled(motion.header)`
   background-color: #252525;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
   position: sticky;
@@ -18,16 +20,30 @@ const Nav = styled.nav`
   padding: 15px 20px;
   max-width: 1200px;
   margin: 0 auto;
+  flex-wrap: wrap;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 10px;
+  }
 `;
 
-const Logo = styled(Link)`
+const TopSection = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+`;
+
+const Logo = styled(motion(Link))`
   display: flex;
   align-items: center;
   color: #4361ee;
   z-index: 1050;
 `;
 
-const LogoImage = styled.img`
+const LogoImage = styled(motion.img)`
   height: 40px;
   width: auto;
   
@@ -36,14 +52,10 @@ const LogoImage = styled.img`
   }
 `;
 
-const MobileIcons = styled.div`
-  display: none;
-  
-  @media (max-width: 768px) {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+const RightIcons = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
 `;
 
 const NavLinks = styled.div`
@@ -52,18 +64,10 @@ const NavLinks = styled.div`
   gap: 20px;
   
   @media (max-width: 768px) {
-    display: ${props => props.isOpen ? 'flex' : 'none'};
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #252525;
-    padding: 80px 20px 20px;
-    z-index: 1000;
+    width: 100%;
     justify-content: center;
-    gap: 30px;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 `;
 
@@ -78,7 +82,8 @@ const NavLink = styled(Link)`
   }
   
   @media (max-width: 768px) {
-    font-size: 1.3rem;
+    font-size: 0.9rem;
+    padding: 6px 10px;
   }
 `;
 
@@ -111,62 +116,98 @@ const CartBadge = styled.span`
   justify-content: center;
 `;
 
-const MenuButton = styled.button`
-  display: none;
+// Componente para o dropdown do usuário
+const UserDropdown = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+const UserButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #f8f9fa;
   background: none;
-  font-size: 1.8rem;
-  z-index: 1050;
-  padding: 8px;
-  min-width: 44px;
-  min-height: 44px;
+  border: none;
+  padding: 8px 12px;
+  font-weight: 500;
+  cursor: pointer;
+  
+  &:hover {
+    color: #e63946;
+  }
   
   @media (max-width: 768px) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 6px 10px;
+    font-size: 0.9rem;
   }
 `;
 
-const Overlay = styled.div`
-  display: none;
+const DropdownContent = styled.div`
+  display: ${props => props.isOpen ? 'block' : 'none'};
+  position: absolute;
+  right: 0;
+  background-color: #252525;
+  min-width: 200px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1050;
+  border-radius: 4px;
+  overflow: hidden;
+`;
+
+const DropdownItem = styled(Link)`
+  display: block;
+  padding: 12px 16px;
+  color: #f8f9fa;
+  text-decoration: none;
   
-  @media (max-width: 768px) {
-    display: ${props => props.isOpen ? 'block' : 'none'};
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 900;
+  &:hover {
+    background-color: #333;
+    color: #e63946;
+  }
+`;
+
+const DropdownButton = styled.button`
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  color: #f8f9fa;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  
+  &:hover {
+    background-color: #333;
+    color: #e63946;
+  }
+`;
+
+const UserName = styled.span`
+  @media (max-width: 992px) {
+    display: none;
   }
 `;
 
 const Header = () => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
     const { totalItems } = useCart();
+    const { currentUser, logout } = useAuth();
     const location = useLocation();
 
-    // Close menu when route changes
+    // Fechar dropdown do usuário quando a rota muda
     useEffect(() => {
-        setIsMenuOpen(false);
+        setIsUserDropdownOpen(false);
     }, [location.pathname]);
 
-    // Prevent scrolling when menu is open
-    useEffect(() => {
-        if (isMenuOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'unset';
-        }
+    const toggleUserDropdown = () => {
+        setIsUserDropdownOpen(!isUserDropdownOpen);
+    };
 
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
-    }, [isMenuOpen]);
-
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
+    const handleLogout = () => {
+        logout();
+        setIsUserDropdownOpen(false);
     };
 
     const isActive = (path) => {
@@ -174,33 +215,98 @@ const Header = () => {
     };
 
     return (
-        <HeaderContainer>
+        <HeaderContainer
+            initial={{ y: -100 }}
+            animate={{ y: 0 }}
+            transition={{ type: "spring", stiffness: 100, damping: 15 }}
+        >
             <Nav>
-                <Logo to="/">
-                    <LogoImage src="/assets/logo.shippin.png" alt="Shippin Logo" />
-                </Logo>
+                <TopSection>
+                    <Logo to="/"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <LogoImage 
+                            src="/assets/logo.shippin.png" 
+                            alt="Shippin Logo"
+                            initial={{ rotate: -5 }}
+                            animate={{ rotate: 0 }}
+                            transition={{ duration: 0.5 }}
+                        />
+                    </Logo>
 
-                <MobileIcons>
-                    <CartIcon to="/cart">
-                        🛒
-                        {totalItems > 0 && <CartBadge>{totalItems}</CartBadge>}
-                    </CartIcon>
-                    <MenuButton onClick={toggleMenu} aria-label="Menu">
-                        {isMenuOpen ? '✕' : '☰'}
-                    </MenuButton>
-                </MobileIcons>
+                    <RightIcons>
+                        <CartIcon to="/cart">
+                            🛒
+                            {totalItems > 0 && <CartBadge>{totalItems}</CartBadge>}
+                        </CartIcon>
+                        
+                        {/* Área do usuário */}
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.4 }}
+                        >
+                            {currentUser ? (
+                                <UserDropdown>
+                                    <UserButton onClick={toggleUserDropdown}
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        👤 <UserName>{currentUser.firstName}</UserName>
+                                    </UserButton>
+                                    <AnimatePresence>
+                                        {isUserDropdownOpen && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: -20, height: 0 }}
+                                                animate={{ opacity: 1, y: 0, height: 'auto' }}
+                                                exit={{ opacity: 0, y: -20, height: 0 }}
+                                                transition={{ duration: 0.2 }}
+                                            >
+                                                <DropdownContent isOpen={true}>
+                                                    <DropdownItem to="/profile">Minha Conta</DropdownItem>
+                                                    <DropdownButton onClick={handleLogout}>Sair</DropdownButton>
+                                                </DropdownContent>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </UserDropdown>
+                            ) : (
+                                <NavLink to="/login" className={isActive('/login')}>Entrar</NavLink>
+                            )}
+                        </motion.div>
+                    </RightIcons>
+                </TopSection>
 
-                <Overlay isOpen={isMenuOpen} onClick={toggleMenu} />
-
-                <NavLinks isOpen={isMenuOpen}>
-                    <NavLink to="/" className={isActive('/')}>Home</NavLink>
-                    <NavLink to="/products" className={isActive('/products')}>Produtos</NavLink>
-                    <NavLink to="/contact" className={isActive('/contact')}>Contato</NavLink>
-                    {/* Carrinho visível apenas em telas maiores */}
-                    <CartIcon to="/cart" className="desktop-only" style={{ display: 'none' }}>
-                        🛒
-                        {totalItems > 0 && <CartBadge>{totalItems}</CartBadge>}
-                    </CartIcon>
+                <NavLinks>
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                    >
+                        <NavLink to="/" className={isActive('/')}>Home</NavLink>
+                    </motion.div>
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                    >
+                        <NavLink to="/products" className={isActive('/products')}>Produtos</NavLink>
+                    </motion.div>
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                    >
+                        <NavLink to="/cart" className={isActive('/cart')}>Carrinho</NavLink>
+                    </motion.div>
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4 }}
+                    >
+                        <NavLink to="/contact" className={isActive('/contact')}>Contato</NavLink>
+                    </motion.div>
                 </NavLinks>
             </Nav>
         </HeaderContainer>

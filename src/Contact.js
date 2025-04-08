@@ -1,5 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+
+// Adicionando os imports necessários para o Leaflet
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+// Corrigindo o problema de ícones do Leaflet em React
+// Isso é necessário porque o webpack processa os arquivos de forma diferente
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+    iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+});
 
 const ContactContainer = styled.div`
   max-width: 1200px;
@@ -139,19 +153,20 @@ const InfoText = styled.p`
   line-height: 1.5;
 `;
 
-const MapContainer = styled.div`
+// Estilizando o container do mapa
+const MapContainer2 = styled.div`
   margin-top: 40px;
   border-radius: 8px;
   overflow: hidden;
   height: 400px;
   grid-column: 1 / -1;
-  background-color: #252525;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #adb5bd;
-  font-size: 1.2rem;
   border: 1px solid #333;
+
+  /* Estilos para o mapa real do Leaflet */
+  .leaflet-container {
+    height: 100%;
+    width: 100%;
+  }
 `;
 
 const SuccessMessage = styled.div`
@@ -173,6 +188,15 @@ const Contact = () => {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [mapLoaded, setMapLoaded] = useState(false);
+
+    // Localização da empresa (exemplo: Av. Paulista, São Paulo)
+    const position = [-23.5632, -46.6542];
+
+    // Verificar se estamos no navegador antes de renderizar o mapa
+    useEffect(() => {
+        setMapLoaded(true);
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -318,9 +342,27 @@ const Contact = () => {
                     </InfoBlock>
                 </ContactInfo>
 
-                <MapContainer>
-                    [Mapa estará disponível aqui]
-                </MapContainer>
+                <MapContainer2>
+                    {mapLoaded && (
+                        <MapContainer 
+                            center={position} 
+                            zoom={15} 
+                            style={{ height: '100%', width: '100%' }}
+                        >
+                            <TileLayer
+                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            />
+                            <Marker position={position}>
+                                <Popup>
+                                    Shippin<br />
+                                    Av. Paulista, 1000<br />
+                                    Bela Vista, São Paulo - SP
+                                </Popup>
+                            </Marker>
+                        </MapContainer>
+                    )}
+                </MapContainer2>
             </ContactLayout>
         </ContactContainer>
     );

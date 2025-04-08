@@ -1,183 +1,208 @@
 import React from 'react';
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 
 const ReturnsContainer = styled.div`
-  max-width: 1000px;
+  max-width: 900px;
   margin: 40px auto;
   padding: 0 20px;
-  color: #f8f9fa;
-  background-color: #1c1c1c;
 `;
 
-const PageTitle = styled.h1`
-  font-size: 2.5rem;
+const ReturnsHeader = styled.div`
+  margin-bottom: 40px;
   text-align: center;
+`;
+
+const ReturnsTitle = styled.h1`
+  font-size: 2.2rem;
+  color: #f8f9fa;
+  margin-bottom: 15px;
+`;
+
+const ReturnsDescription = styled.p`
+  color: #adb5bd;
+  font-size: 1.1rem;
+`;
+
+const InfoSection = styled(motion.div)`
+  background-color: #252525;
+  border-radius: 8px;
+  padding: 25px;
   margin-bottom: 30px;
 `;
 
-const Section = styled.section`
-  margin-bottom: 40px;
-`;
-
 const SectionTitle = styled.h2`
-  font-size: 1.8rem;
+  font-size: 1.5rem;
+  color: #f8f9fa;
   margin-bottom: 15px;
-  color: #e63946;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #333;
+  position: relative;
+  
+  &:after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 3px;
+    background-color: #e63946;
+    margin-top: 8px;
+  }
 `;
 
-const Paragraph = styled.p`
-  margin-bottom: 15px;
-  line-height: 1.6;
+const SectionContent = styled.div`
   color: #adb5bd;
+  line-height: 1.6;
+  
+  p {
+    margin-bottom: 15px;
+  }
+  
+  ul {
+    margin-left: 20px;
+    margin-bottom: 15px;
+    
+    li {
+      margin-bottom: 8px;
+    }
+  }
 `;
 
-const StepContainer = styled.div`
-  margin: 30px 0;
+const StepsContainer = styled.div`
+  margin: 25px 0;
 `;
 
-const Step = styled.div`
+const StepItem = styled.div`
   display: flex;
   margin-bottom: 20px;
-  background-color: #252525;
-  padding: 20px;
-  border-radius: 8px;
 `;
 
 const StepNumber = styled.div`
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
   background-color: #e63946;
   color: white;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  margin-right: 20px;
+  margin-right: 15px;
   flex-shrink: 0;
 `;
 
-const StepContent = styled.div``;
-
-const StepTitle = styled.h3`
-  margin-bottom: 10px;
-  font-size: 1.2rem;
+const StepContent = styled.div`
+  padding-top: 5px;
 `;
 
-const StepDescription = styled.p`
-  color: #adb5bd;
-  line-height: 1.5;
-`;
-
-const ListContainer = styled.ul`
-  margin: 20px 0;
-  padding-left: 20px;
-`;
-
-const ListItem = styled.li`
-  margin-bottom: 10px;
-  line-height: 1.5;
-  color: #adb5bd;
-`;
+const Step = ({ number, title, description }) => (
+  <StepItem>
+    <StepNumber>{number}</StepNumber>
+    <StepContent>
+      <strong>{title}</strong>
+      <p>{description}</p>
+    </StepContent>
+  </StepItem>
+);
 
 const Returns = () => {
-    return (
-        <ReturnsContainer>
-            <PageTitle>Política de Devoluções</PageTitle>
-
-            <Section>
-                <SectionTitle>Nossa Garantia</SectionTitle>
-                <Paragraph>
-                    Na Shippin, queremos que você tenha total satisfação com suas compras. Por isso, todos os produtos têm garantia
-                    de qualidade e podem ser devolvidos ou trocados em caso de defeitos, danos durante o transporte ou se o produto
-                    recebido for diferente do anunciado.
-                </Paragraph>
-            </Section>
-
-            <Section>
-                <SectionTitle>Prazo para Devoluções</SectionTitle>
-                <Paragraph>
-                    Você tem até <strong>30 dias</strong> após o recebimento do produto para solicitar uma devolução ou troca.
-                    Para itens com defeito, a garantia pode ser estendida conforme especificado na descrição do produto.
-                </Paragraph>
-            </Section>
-
-            <Section>
-                <SectionTitle>Como Solicitar uma Devolução</SectionTitle>
-                <StepContainer>
-                    <Step>
-                        <StepNumber>1</StepNumber>
-                        <StepContent>
-                            <StepTitle>Entre em contato conosco</StepTitle>
-                            <StepDescription>
-                                Envie um e-mail para suporte@shippin.com ou use o formulário de contato em nosso site,
-                                informando o número do pedido e o motivo da devolução.
-                            </StepDescription>
-                        </StepContent>
-                    </Step>
-
-                    <Step>
-                        <StepNumber>2</StepNumber>
-                        <StepContent>
-                            <StepTitle>Aguarde a confirmação</StepTitle>
-                            <StepDescription>
-                                Nossa equipe analisará seu pedido e enviará instruções detalhadas sobre como proceder com a devolução.
-                            </StepDescription>
-                        </StepContent>
-                    </Step>
-
-                    <Step>
-                        <StepNumber>3</StepNumber>
-                        <StepContent>
-                            <StepTitle>Envie o produto</StepTitle>
-                            <StepDescription>
-                                Embale o produto na embalagem original (ou equivalente) e envie para o endereço fornecido.
-                                Dependendo do motivo da devolução, podemos fornecer uma etiqueta de devolução pré-paga.
-                            </StepDescription>
-                        </StepContent>
-                    </Step>
-
-                    <Step>
-                        <StepNumber>4</StepNumber>
-                        <StepContent>
-                            <StepTitle>Receba o reembolso ou produto substituto</StepTitle>
-                            <StepDescription>
-                                Após recebermos e inspecionarmos o item devolvido, processaremos o reembolso ou enviaremos
-                                um produto substituto conforme solicitado.
-                            </StepDescription>
-                        </StepContent>
-                    </Step>
-                </StepContainer>
-            </Section>
-
-            <Section>
-                <SectionTitle>Condições para Devolução</SectionTitle>
-                <Paragraph>
-                    Para que a devolução seja aceita, os produtos devem ser devolvidos:
-                </Paragraph>
-                <ListContainer>
-                    <ListItem>Em suas embalagens originais</ListItem>
-                    <ListItem>Com todas as etiquetas e acessórios incluídos</ListItem>
-                    <ListItem>Sem sinais de uso além do necessário para teste</ListItem>
-                    <ListItem>Acompanhados da nota fiscal de compra</ListItem>
-                </ListContainer>
-            </Section>
-
-            <Section>
-                <SectionTitle>Reembolsos</SectionTitle>
-                <Paragraph>
-                    Os reembolsos serão processados em até 10 dias úteis após o recebimento e inspeção do produto devolvido.
-                    O valor será creditado utilizando o mesmo método de pagamento usado na compra original.
-                </Paragraph>
-                <Paragraph>
-                    <strong>Nota:</strong> O valor do frete de devolução não será reembolsado, exceto em casos de produtos com defeito
-                    ou enviados incorretamente.
-                </Paragraph>
-            </Section>
-        </ReturnsContainer>
-    );
+  return (
+    <ReturnsContainer>
+      <ReturnsHeader>
+        <ReturnsTitle>Política de Trocas e Devoluções</ReturnsTitle>
+        <ReturnsDescription>
+          Informações sobre como realizar trocas e devoluções de produtos
+        </ReturnsDescription>
+      </ReturnsHeader>
+      
+      <InfoSection
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+      >
+        <SectionTitle>Direito de Arrependimento</SectionTitle>
+        <SectionContent>
+          <p>
+            De acordo com o Código de Defesa do Consumidor, você tem o direito de devolver um produto 
+            adquirido pela internet dentro do prazo de 7 dias corridos, contados a partir da data de recebimento.
+          </p>
+          
+          <p>
+            Para exercer esse direito, o produto deve estar em perfeitas condições, sem sinais de uso, 
+            com a embalagem original, manuais, acessórios e nota fiscal.
+          </p>
+        </SectionContent>
+      </InfoSection>
+      
+      <InfoSection
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <SectionTitle>Como Solicitar uma Troca ou Devolução</SectionTitle>
+        <SectionContent>
+          <StepsContainer>
+            <Step 
+              number="1" 
+              title="Acesse sua conta" 
+              description="Faça login no site e vá até a seção 'Meus Pedidos'."
+            />
+            
+            <Step 
+              number="2" 
+              title="Localize seu pedido" 
+              description="Encontre o pedido que contém o produto que deseja trocar ou devolver."
+            />
+            
+            <Step 
+              number="3" 
+              title="Solicite a devolução" 
+              description="Clique no botão 'Solicitar Devolução' e preencha o formulário indicando o motivo da devolução."
+            />
+            
+            <Step 
+              number="4" 
+              title="Aguarde a análise" 
+              description="Nossa equipe analisará sua solicitação em até 2 dias úteis."
+            />
+            
+            <Step 
+              number="5" 
+              title="Envie o produto" 
+              description="Após a aprovação, você receberá uma etiqueta para envio do produto. Embale-o adequadamente com todos os acessórios e documentos."
+            />
+            
+            <Step 
+              number="6" 
+              title="Reembolso ou troca" 
+              description="Após recebermos e verificarmos o produto, realizaremos o reembolso ou enviaremos o novo produto em caso de troca."
+            />
+          </StepsContainer>
+        </SectionContent>
+      </InfoSection>
+      
+      <InfoSection
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+      >
+        <SectionTitle>Produtos com Defeito</SectionTitle>
+        <SectionContent>
+          <p>
+            Se você recebeu um produto com defeito, tem o direito de solicitar a troca ou o reembolso 
+            dentro do prazo de garantia. A garantia legal é de 90 dias para produtos duráveis e 30 dias para produtos não duráveis.
+          </p>
+          
+          <p>
+            Para produtos com defeito, siga o mesmo processo de solicitação de devolução, selecionando 
+            a opção "Produto com Defeito" e descrevendo detalhadamente o problema encontrado.
+          </p>
+          
+          <p>
+            Nossa equipe técnica irá analisar o produto e, caso o defeito seja confirmado, realizaremos 
+            a troca por um produto novo ou o reembolso integral do valor pago.
+          </p>
+        </SectionContent>
+      </InfoSection>
+    </ReturnsContainer>
+  );
 };
 
 export default Returns;

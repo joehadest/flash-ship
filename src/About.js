@@ -1,29 +1,40 @@
 import React from 'react';
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 
 const AboutContainer = styled.div`
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  background-color: #1c1c1c;
-  color: #f8f9fa;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+`;
+
+const AboutHeader = styled.div`
+  margin-bottom: 40px;
+  text-align: center;
 `;
 
 const AboutTitle = styled.h1`
-  font-size: 2.5rem;
-  text-align: center;
-  margin-bottom: 30px;
-  color: #333;
+  font-size: 2.2rem;
+  color: #f8f9fa;
+  margin-bottom: 15px;
 `;
 
-const Section = styled.section`
-  margin-bottom: 50px;
+const AboutDescription = styled.p`
+  color: #adb5bd;
+  font-size: 1.1rem;
+`;
+
+const InfoSection = styled(motion.div)`
+  background-color: #252525;
+  border-radius: 8px;
+  padding: 25px;
+  margin-bottom: 30px;
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 1.8rem;
-  margin-bottom: 20px;
-  color: #333;
+  font-size: 1.5rem;
+  color: #f8f9fa;
+  margin-bottom: 15px;
   position: relative;
   
   &:after {
@@ -31,179 +42,209 @@ const SectionTitle = styled.h2`
     display: block;
     width: 50px;
     height: 3px;
-    background-color: #4361ee;
-    margin-top: 10px;
+    background-color: #e63946;
+    margin-top: 8px;
   }
 `;
 
-const Paragraph = styled.p`
-  font-size: 1.1rem;
-  line-height: 1.7;
-  color: #555;
-  margin-bottom: 20px;
+const SectionContent = styled.div`
+  color: #adb5bd;
+  line-height: 1.6;
+  
+  p {
+    margin-bottom: 15px;
+  }
 `;
 
-const TeamGrid = styled.div`
+const TeamContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 30px;
-  margin-top: 40px;
-`;
-
-const TeamMember = styled.div`
-  text-align: center;
-`;
-
-const TeamMemberImage = styled.div`
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  background-color: #e9ecef;
-  margin: 0 auto 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  color: #6c757d;
-`;
-
-const TeamMemberName = styled.h3`
-  font-size: 1.2rem;
-  margin-bottom: 5px;
-`;
-
-const TeamMemberRole = styled.p`
-  font-size: 0.9rem;
-  color: #6c757d;
-`;
-
-const ValuesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 25px;
   margin-top: 30px;
 `;
 
-const ValueCard = styled.div`
-  padding: 20px;
-  background-color: #f8f9fa;
+const TeamMember = styled(motion.div)`
+  background-color: #303030;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  text-align: center;
 `;
 
-const ValueIcon = styled.div`
-  font-size: 2rem;
-  margin-bottom: 15px;
-  color: #4361ee;
+const MemberImage = styled.img`
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  object-position: center top;
 `;
 
-const ValueTitle = styled.h3`
-  font-size: 1.3rem;
+const MemberInfo = styled.div`
+  padding: 15px;
+`;
+
+const MemberName = styled.h3`
+  font-size: 1.1rem;
+  color: #f8f9fa;
+  margin-bottom: 5px;
+`;
+
+const MemberRole = styled.p`
+  font-size: 0.9rem;
+  color: #e63946;
   margin-bottom: 10px;
 `;
 
-const ValueDescription = styled.p`
-  font-size: 1rem;
-  color: #555;
-  line-height: 1.6;
+const ImageGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin: 30px 0;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const StoreImage = styled(motion.img)`
+  width: 100%;
+  border-radius: 8px;
+  height: 250px;
+  object-fit: cover;
 `;
 
 const About = () => {
-    return (
-        <AboutContainer>
-            <AboutTitle>Sobre a Shippin</AboutTitle>
-
-            <Section>
-                <SectionTitle>Nossa História</SectionTitle>
-                <Paragraph>
-                    A Shippin nasceu em 2022 com uma visão clara: transformar a forma como as pessoas compram produtos online. Fundada por um grupo de empreendedores apaixonados por tecnologia e inovação, nossa empresa rapidamente se estabeleceu como referência no mercado de dropshipping no Brasil.
-                </Paragraph>
-                <Paragraph>
-                    Começamos com um pequeno catálogo de produtos eletrônicos, mas logo expandimos para diversas categorias, sempre mantendo nosso compromisso com a qualidade, preços competitivos e excelência no atendimento ao cliente.
-                </Paragraph>
-                <Paragraph>
-                    Hoje, somos uma das principais plataformas de e-commerce com modelo dropshipping do país, conectando os melhores fornecedores do mundo aos consumidores brasileiros, sem intermediários, o que nos permite oferecer preços mais acessíveis e uma experiência de compra diferenciada.
-                </Paragraph>
-            </Section>
-
-            <Section>
-                <SectionTitle>Nossa Missão</SectionTitle>
-                <Paragraph>
-                    Proporcionar aos consumidores brasileiros acesso fácil e descomplicado a produtos de qualidade internacional, com preços justos e entrega rápida, transformando a experiência de compra online em algo extraordinário.
-                </Paragraph>
-            </Section>
-
-            <Section>
-                <SectionTitle>Nossos Valores</SectionTitle>
-                <ValuesGrid>
-                    <ValueCard>
-                        <ValueIcon>🔍</ValueIcon>
-                        <ValueTitle>Transparência</ValueTitle>
-                        <ValueDescription>
-                            Acreditamos que a honestidade e a transparência são fundamentais em todos os aspectos do nosso negócio, desde os preços até as políticas de devolução.
-                        </ValueDescription>
-                    </ValueCard>
-
-                    <ValueCard>
-                        <ValueIcon>👑</ValueIcon>
-                        <ValueTitle>Qualidade</ValueTitle>
-                        <ValueDescription>
-                            Comprometemo-nos a oferecer apenas produtos que atendam a rigorosos padrões de qualidade, trabalhando com os melhores fornecedores do mercado.
-                        </ValueDescription>
-                    </ValueCard>
-
-                    <ValueCard>
-                        <ValueIcon>🚀</ValueIcon>
-                        <ValueTitle>Inovação</ValueTitle>
-                        <ValueDescription>
-                            Buscamos constantemente novas tecnologias e processos para melhorar a experiência do cliente e otimizar nossas operações.
-                        </ValueDescription>
-                    </ValueCard>
-
-                    <ValueCard>
-                        <ValueIcon>♻️</ValueIcon>
-                        <ValueTitle>Sustentabilidade</ValueTitle>
-                        <ValueDescription>
-                            Comprometemo-nos com práticas comerciais sustentáveis, buscando reduzir o impacto ambiental em todas as nossas operações.
-                        </ValueDescription>
-                    </ValueCard>
-                </ValuesGrid>
-            </Section>
-
-            <Section>
-                <SectionTitle>Nossa Equipe</SectionTitle>
-                <Paragraph>
-                    Contamos com um time diversificado de profissionais talentosos e apaixonados pelo que fazem. Juntos, trabalhamos para oferecer a melhor experiência possível aos nossos clientes.
-                </Paragraph>
-
-                <TeamGrid>
-                    <TeamMember>
-                        <TeamMemberImage>👨‍💼</TeamMemberImage>
-                        <TeamMemberName>Carlos Silva</TeamMemberName>
-                        <TeamMemberRole>CEO & Fundador</TeamMemberRole>
-                    </TeamMember>
-
-                    <TeamMember>
-                        <TeamMemberImage>👩‍💼</TeamMemberImage>
-                        <TeamMemberName>Ana Oliveira</TeamMemberName>
-                        <TeamMemberRole>Diretora de Operações</TeamMemberRole>
-                    </TeamMember>
-
-                    <TeamMember>
-                        <TeamMemberImage>👨‍💻</TeamMemberImage>
-                        <TeamMemberName>Rafael Costa</TeamMemberName>
-                        <TeamMemberRole>CTO</TeamMemberRole>
-                    </TeamMember>
-
-                    <TeamMember>
-                        <TeamMemberImage>👩‍🎨</TeamMemberImage>
-                        <TeamMemberName>Mariana Santos</TeamMemberName>
-                        <TeamMemberRole>Diretora de Marketing</TeamMemberRole>
-                    </TeamMember>
-                </TeamGrid>
-            </Section>
-        </AboutContainer>
-    );
+  return (
+    <AboutContainer>
+      <AboutHeader>
+        <AboutTitle>Sobre Nós</AboutTitle>
+        <AboutDescription>
+          Conheça nossa história, missão e os valores que nos guiam
+        </AboutDescription>
+      </AboutHeader>
+      
+      <InfoSection
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+      >
+        <SectionTitle>Nossa História</SectionTitle>
+        <SectionContent>
+          <p>
+            Fundada em 2018, a Shippin nasceu da visão de transformar a experiência de compras online
+            no Brasil. Começamos como uma pequena operação focada apenas em acessórios para celulares,
+            operando de um pequeno galpão em São Paulo.
+          </p>
+          <p>
+            Ao longo dos anos, expandimos nosso catálogo para incluir eletrônicos, moda e itens para casa,
+            sempre com o compromisso de oferecer produtos de qualidade com preços acessíveis e entregas rápidas.
+            Hoje, contamos com um time de mais de 100 colaboradores e um centro de distribuição moderno que
+            nos permite atender todo o território nacional.
+          </p>
+          <p>
+            Nossa jornada foi marcada por desafios e conquistas, mas sempre mantivemos o foco em nossos clientes
+            e na melhoria contínua de nossos processos para garantir uma experiência de compra excepcional.
+          </p>
+          
+          <ImageGrid>
+            <StoreImage 
+              src="https://images.unsplash.com/photo-1582560475093-ba66accbc424?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80" 
+              alt="Nossa loja" 
+              whileHover={{ scale: 1.03 }}
+              transition={{ duration: 0.3 }}
+            />
+            <StoreImage 
+              src="https://images.unsplash.com/photo-1556744590-2c81e6444601?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80" 
+              alt="Nosso centro de distribuição" 
+              whileHover={{ scale: 1.03 }}
+              transition={{ duration: 0.3 }}
+            />
+          </ImageGrid>
+        </SectionContent>
+      </InfoSection>
+      
+      <InfoSection
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <SectionTitle>Missão, Visão e Valores</SectionTitle>
+        <SectionContent>
+          <p>
+            <strong>Missão:</strong> Conectar pessoas a produtos de qualidade com uma experiência de compra
+            simples, rápida e confiável.
+          </p>
+          <p>
+            <strong>Visão:</strong> Ser reconhecida como a melhor plataforma de e-commerce do Brasil, 
+            referência em qualidade, inovação e satisfação do cliente.
+          </p>
+          <p>
+            <strong>Valores:</strong>
+          </p>
+          <ul>
+            <li><strong>Transparência:</strong> Mantemos uma comunicação clara e honesta com nossos clientes e parceiros.</li>
+            <li><strong>Qualidade:</strong> Buscamos excelência em tudo o que fazemos, desde a seleção de produtos até o atendimento.</li>
+            <li><strong>Inovação:</strong> Estamos sempre em busca de novas tecnologias e processos para melhorar nossos serviços.</li>
+            <li><strong>Responsabilidade:</strong> Comprometemo-nos com práticas sustentáveis e éticas em todas as nossas operações.</li>
+            <li><strong>Foco no cliente:</strong> O cliente está no centro de todas as nossas decisões.</li>
+          </ul>
+        </SectionContent>
+      </InfoSection>
+      
+      <InfoSection
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+      >
+        <SectionTitle>Nossa Equipe</SectionTitle>
+        <SectionContent>
+          <p>
+            Contamos com profissionais talentosos e dedicados que tornam possível entregar a melhor
+            experiência para nossos clientes todos os dias.
+          </p>
+          
+          <TeamContainer>
+            <TeamMember
+              whileHover={{ y: -10, boxShadow: "0 10px 20px rgba(0,0,0,0.2)" }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              <MemberImage src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" alt="CEO" />
+              <MemberInfo>
+                <MemberName>Carlos Oliveira</MemberName>
+                <MemberRole>CEO & Fundador</MemberRole>
+              </MemberInfo>
+            </TeamMember>
+            
+            <TeamMember
+              whileHover={{ y: -10, boxShadow: "0 10px 20px rgba(0,0,0,0.2)" }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              <MemberImage src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=688&q=80" alt="COO" />
+              <MemberInfo>
+                <MemberName>Ana Silva</MemberName>
+                <MemberRole>Diretora de Operações</MemberRole>
+              </MemberInfo>
+            </TeamMember>
+            
+            <TeamMember
+              whileHover={{ y: -10, boxShadow: "0 10px 20px rgba(0,0,0,0.2)" }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.6 }}
+            >
+              <MemberImage src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" alt="CTO" />
+              <MemberInfo>
+                <MemberName>Ricardo Santos</MemberName>
+                <MemberRole>Diretor de Tecnologia</MemberRole>
+              </MemberInfo>
+            </TeamMember>
+          </TeamContainer>
+        </SectionContent>
+      </InfoSection>
+    </AboutContainer>
+  );
 };
 
 export default About;

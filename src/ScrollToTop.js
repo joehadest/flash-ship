@@ -1,89 +1,81 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const ScrollButton = styled.button`
+const ScrollButton = styled(motion.button)`
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 40px;
-  height: 40px;
+  right: 30px;
+  bottom: 30px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background-color: #e63946;
   color: white;
-  border: none;
-  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+  border: none;
   font-size: 1.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  z-index: 999;
-  opacity: ${props => props.visible ? '1' : '0'};
-  visibility: ${props => props.visible ? 'visible' : 'hidden'};
-  transition: opacity 0.3s, visibility 0.3s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  z-index: 99;
   
-  &:hover {
-    background-color: #c1121f;
-  }
-  
-  @media (min-width: 769px) {
-    width: 50px;
-    height: 50px;
+  @media (max-width: 768px) {
+    right: 20px;
+    bottom: 20px;
+    width: 45px;
+    height: 45px;
   }
 `;
 
-const ArrowUp = () => (
-    <svg
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-    >
-        <path d="M18 15l-6-6-6 6" />
-    </svg>
-);
+const ArrowIcon = styled.span`
+  transform: rotate(-90deg);
+  display: inline-block;
+`;
 
 const ScrollToTop = () => {
-    const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
-    // Função para verificar a posição da rolagem
+  // Mostrar o botão quando o usuário rolar para baixo
+  useEffect(() => {
     const toggleVisibility = () => {
-        if (window.pageYOffset > 300) {
-            setIsVisible(true);
-        } else {
-            setIsVisible(false);
-        }
+      if (window.pageYOffset > 300) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
     };
 
-    // Função para rolar para o topo
-    const scrollToTop = () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    };
+    window.addEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
+  }, []);
 
-    useEffect(() => {
-        window.addEventListener('scroll', toggleVisibility);
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
 
-        return () => {
-            window.removeEventListener('scroll', toggleVisibility);
-        };
-    }, []);
-
-    return (
+  return (
+    <AnimatePresence>
+      {isVisible && (
         <ScrollButton
-            visible={isVisible ? 1 : 0}
-            onClick={scrollToTop}
-            aria-label="Voltar ao topo"
+          onClick={scrollToTop}
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0 }}
+          whileHover={{ 
+            scale: 1.1,
+            boxShadow: '0 6px 15px rgba(0, 0, 0, 0.3)'
+          }}
+          whileTap={{ scale: 0.95 }}
         >
-            <ArrowUp />
+          <ArrowIcon>➤</ArrowIcon>
         </ScrollButton>
-    );
+      )}
+    </AnimatePresence>
+  );
 };
 
 export default ScrollToTop;

@@ -1,121 +1,146 @@
 import React from 'react';
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 
 const FAQContainer = styled.div`
-  max-width: 1000px;
+  max-width: 900px;
   margin: 40px auto;
   padding: 0 20px;
-  color: #f8f9fa;
-  background-color: #1c1c1c;
 `;
 
-const PageTitle = styled.h1`
-  font-size: 2.5rem;
+const FAQHeader = styled.div`
+  margin-bottom: 40px;
   text-align: center;
-  margin-bottom: 40px;
 `;
 
-const FAQSection = styled.div`
-  margin-bottom: 40px;
-`;
-
-const Question = styled.div`
-  background-color: #252525;
-  padding: 20px;
-  border-radius: 8px;
+const FAQTitle = styled.h1`
+  font-size: 2.2rem;
+  color: #f8f9fa;
   margin-bottom: 15px;
-  cursor: pointer;
-  
-  &:hover {
-    background-color: #333;
-  }
 `;
 
-const QuestionHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 600;
+const FAQDescription = styled.p`
+  color: #adb5bd;
   font-size: 1.1rem;
 `;
 
-const Answer = styled.div`
-  padding: 15px;
-  background-color: #1c1c1c;
-  border-left: 3px solid #e63946;
-  margin-top: 10px;
+const FAQItem = styled(motion.div)`
+  background-color: #252525;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  overflow: hidden;
+`;
+
+const FAQQuestion = styled.button`
+  width: 100%;
+  text-align: left;
+  padding: 20px;
+  background-color: #252525;
+  color: #f8f9fa;
+  font-size: 1.1rem;
+  font-weight: 500;
+  border: none;
+  border-bottom: ${props => props.isOpen ? '1px solid #333' : 'none'};
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  &:hover {
+    background-color: #2c2c2c;
+  }
+`;
+
+const FAQAnswer = styled(motion.div)`
+  padding: 0;
+  height: auto;
+  background-color: #252525;
   color: #adb5bd;
-  border-radius: 0 8px 8px 0;
+  overflow: hidden;
+`;
+
+const FAQAnswerContent = styled.div`
+  padding: 20px;
+  line-height: 1.6;
+`;
+
+const Icon = styled.span`
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+  transform: ${props => props.isOpen ? 'rotate(45deg)' : 'rotate(0)'};
 `;
 
 const FAQ = () => {
-    const [openedQuestions, setOpenedQuestions] = React.useState({});
-
-    const toggleQuestion = (id) => {
-        setOpenedQuestions({
-            ...openedQuestions,
-            [id]: !openedQuestions[id]
-        });
-    };
-
-    const faqItems = [
-        {
-            id: 1,
-            question: "Quanto tempo leva para receber meu pedido?",
-            answer: "O tempo de entrega depende da sua localização. Normalmente, pedidos nacionais são entregues em 7-14 dias úteis. Para regiões mais remotas, pode levar até 21 dias úteis."
-        },
-        {
-            id: 2,
-            question: "Como rastrear meu pedido?",
-            answer: "Após o envio do seu pedido, você receberá um e-mail com o código de rastreamento e instruções sobre como acompanhar o status da entrega."
-        },
-        {
-            id: 3,
-            question: "Posso cancelar ou alterar meu pedido?",
-            answer: "Pedidos podem ser cancelados ou alterados em até 24 horas após a compra, desde que ainda não tenham sido enviados. Entre em contato com nosso suporte para solicitar alterações."
-        },
-        {
-            id: 4,
-            question: "Como funciona a política de devolução?",
-            answer: "Aceitamos devoluções em até 30 dias após o recebimento do produto. O item deve estar em sua embalagem original e em perfeito estado. Consulte nossa página de Devoluções para mais detalhes."
-        },
-        {
-            id: 5,
-            question: "Qual é a forma de pagamento aceita?",
-            answer: "Aceitamos cartões de crédito, débito, transferências bancárias, boleto e PIX. Todas as transações são seguras e criptografadas."
-        },
-        {
-            id: 6,
-            question: "Os produtos têm garantia?",
-            answer: "Sim, todos os produtos possuem garantia mínima de 3 meses. Alguns itens podem ter garantia estendida conforme indicado na descrição do produto."
-        },
-        {
-            id: 7,
-            question: "Vocês enviam para fora do Brasil?",
-            answer: "No momento, realizamos entregas apenas para endereços dentro do território brasileiro."
-        }
-    ];
-
-    return (
-        <FAQContainer>
-            <PageTitle>Perguntas Frequentes</PageTitle>
-
-            <FAQSection>
-                {faqItems.map(item => (
-                    <Question key={item.id} onClick={() => toggleQuestion(item.id)}>
-                        <QuestionHeader>
-                            {item.question}
-                            <span>{openedQuestions[item.id] ? '−' : '+'}</span>
-                        </QuestionHeader>
-
-                        {openedQuestions[item.id] && (
-                            <Answer>{item.answer}</Answer>
-                        )}
-                    </Question>
-                ))}
-            </FAQSection>
-        </FAQContainer>
-    );
+  const [openItem, setOpenItem] = React.useState(null);
+  
+  const faqItems = [
+    {
+      question: 'Como faço para rastrear meu pedido?',
+      answer: 'Você pode rastrear seu pedido fazendo login na sua conta e indo para a seção "Meus Pedidos". Lá você encontrará o código de rastreamento e um link direto para acompanhar o status da entrega.'
+    },
+    {
+      question: 'Qual é o prazo de entrega?',
+      answer: 'O prazo de entrega varia de acordo com a região. Geralmente, entregamos em capitais e grandes cidades em 1-3 dias úteis. Para outras localidades, o prazo é de 3-7 dias úteis. Você pode verificar o prazo estimado no carrinho antes de finalizar a compra.'
+    },
+    {
+      question: 'Como faço para trocar ou devolver um produto?',
+      answer: 'Você tem até 7 dias após o recebimento do produto para solicitar uma troca ou devolução. Para isso, acesse a seção "Meus Pedidos", selecione o produto que deseja devolver e siga as instruções. Após aprovação, enviaremos uma etiqueta de devolução para você.'
+    },
+    {
+      question: 'Quais formas de pagamento são aceitas?',
+      answer: 'Aceitamos cartões de crédito (Visa, Mastercard, American Express, Elo), boleto bancário e Pix. Para cartões de crédito, oferecemos parcelamento em até 10x sem juros para compras acima de R$ 300,00.'
+    },
+    {
+      question: 'Os produtos têm garantia?',
+      answer: 'Todos os nossos produtos possuem garantia mínima de 90 dias, conforme o Código de Defesa do Consumidor. Alguns produtos específicos possuem garantia estendida oferecida pelo fabricante, que está indicada na descrição do produto.'
+    }
+  ];
+  
+  const toggleItem = (index) => {
+    setOpenItem(openItem === index ? null : index);
+  };
+  
+  return (
+    <FAQContainer>
+      <FAQHeader>
+        <FAQTitle>Perguntas Frequentes</FAQTitle>
+        <FAQDescription>Encontre respostas para as dúvidas mais comuns sobre nossos produtos e serviços.</FAQDescription>
+      </FAQHeader>
+      
+      {faqItems.map((item, index) => (
+        <FAQItem 
+          key={index}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.1 }}
+          whileHover={{ boxShadow: '0 5px 15px rgba(0,0,0,0.2)' }}
+        >
+          <FAQQuestion 
+            onClick={() => toggleItem(index)}
+            isOpen={openItem === index}
+          >
+            {item.question}
+            <Icon isOpen={openItem === index}>+</Icon>
+          </FAQQuestion>
+          
+          <FAQAnswer
+            initial={false}
+            animate={{ 
+              height: openItem === index ? 'auto' : 0,
+              opacity: openItem === index ? 1 : 0
+            }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+          >
+            {openItem === index && (
+              <FAQAnswerContent>
+                {item.answer}
+              </FAQAnswerContent>
+            )}
+          </FAQAnswer>
+        </FAQItem>
+      ))}
+    </FAQContainer>
+  );
 };
 
 export default FAQ;
